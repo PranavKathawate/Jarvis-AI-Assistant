@@ -1,0 +1,10 @@
+__pycache__/
+dist/
+build/
+*.pyc
+memory.json
+.env
+ffmpeg-8.0.1-essentials_build/
+ffmpeg-8.0.1-essentials_build.zip
+python/
+pyinstaller
