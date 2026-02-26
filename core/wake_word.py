@@ -2,12 +2,16 @@ import pvporcupine
 import pyaudio
 import struct
 import time
+import os
 
 from core.listener import start_listening
 
 
-# Your Picovoice Access Key
-ACCESS_KEY = "Og50EzHdOsYSA2Y3lkjDqnc6T7vRt5993FCYvUeNzKGTRchPQy+hTA=="
+# Load Picovoice Access Key from environment variable
+ACCESS_KEY = os.getenv("PICO_ACCESS_KEY")
+
+if not ACCESS_KEY:
+    raise ValueError("PICO_ACCESS_KEY not set in environment variables.")
 
 
 def start_wake_word():
@@ -39,7 +43,10 @@ def start_wake_word():
                 exception_on_overflow=False
             )
 
-            pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
+            pcm = struct.unpack_from(
+                "h" * porcupine.frame_length,
+                pcm
+            )
 
             keyword_index = porcupine.process(pcm)
 
@@ -47,7 +54,7 @@ def start_wake_word():
 
                 print("Wake word detected")
 
-                # CLOSE mic before listening
+                # Close mic before listening
                 audio_stream.stop_stream()
                 audio_stream.close()
 
@@ -58,8 +65,9 @@ def start_wake_word():
 
                 time.sleep(0.5)
 
-                # break to reopen mic cleanly
                 break
+
+
 def detect_wake_word_only():
 
     porcupine = pvporcupine.create(
